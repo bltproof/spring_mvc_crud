@@ -32,13 +32,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void delete(long id) {
-        userDao.delete(id);
+    public void delete(User user) {
+        userDao.delete(user);
     }
 
     @Transactional
     @Override
-    public void update(long id, User user) {
-        userDao.update(id, user);
+    public void update(User user) {
+        userDao.update(user);
     }
 }

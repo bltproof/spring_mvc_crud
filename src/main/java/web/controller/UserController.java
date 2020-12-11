@@ -11,6 +11,7 @@ import java.util.List;
 
 @Controller
 public class UserController {
+
     @Autowired
     private UserService userService;
 
@@ -29,8 +30,8 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public String deleteUserById(@PathVariable long id) {
-        userService.delete(id);
+    public String deleteUser(@ModelAttribute("user") User user) {
+        userService.delete(user);
         return "redirect:/";
     }
 
@@ -53,8 +54,8 @@ public class UserController {
     }
 
     @PatchMapping(value = "/edit/{id}")
-    public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") long id) {
-        userService.update(id, user);
+    public String updateUser(@ModelAttribute("user") User user) {
+        userService.update(user);
         return "redirect:/";
     }
 }
