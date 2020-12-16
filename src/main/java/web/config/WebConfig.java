@@ -18,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import web.model.Role;
 import web.model.User;
 
 import javax.persistence.EntityManagerFactory;
@@ -74,6 +75,7 @@ public class WebConfig implements WebMvcConfigurer {
 		factoryBean.setDataSource(dataSource());
 		factoryBean.setHibernateProperties(hibernateProperties());
 		factoryBean.setAnnotatedClasses(User.class);
+		factoryBean.setAnnotatedClasses(Role.class);
 		return factoryBean;
 	}
 
