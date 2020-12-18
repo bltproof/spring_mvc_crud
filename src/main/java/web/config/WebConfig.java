@@ -74,8 +74,7 @@ public class WebConfig implements WebMvcConfigurer {
 		final LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
 		factoryBean.setDataSource(dataSource());
 		factoryBean.setHibernateProperties(hibernateProperties());
-		factoryBean.setAnnotatedClasses(User.class);
-		factoryBean.setAnnotatedClasses(Role.class);
+		factoryBean.setAnnotatedClasses(User.class, Role.class);
 		return factoryBean;
 	}
 

@@ -16,5 +16,10 @@
     <hr/>
     <a th:href="@{/new}">Create new user</a>
 </div>
+<div>
+    <form th:method="POST" th:action="@{/logout}">
+        <input type="submit" value="Logout">
+    </form>
+</div>
 </body>
 </html>
