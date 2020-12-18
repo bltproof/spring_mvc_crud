@@ -24,6 +24,9 @@ public class User implements UserDetails {
     @Column
     private String password;
 
+    @Column
+    private String email;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -34,9 +37,10 @@ public class User implements UserDetails {
 //        roles = new HashSet<>();
     }
 
-    public User(String name, byte age) {
+    public User(String name, byte age, String email) {
         this.name = name;
         this.age = age;
+        this.email = email;
     }
 
     public User(Long id, String name, String password, Set<Role> roles) {
@@ -68,6 +72,14 @@ public class User implements UserDetails {
 
     public void setAge(byte age) {
         this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

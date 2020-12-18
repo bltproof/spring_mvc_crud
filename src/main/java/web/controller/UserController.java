@@ -37,6 +37,12 @@ public class UserController {
         return "redirect:/";
     }
 
+    @RequestMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable(name = "id") Long id) {
+        userService.delete(id);
+        return "redirect:/";
+    }
+
     @GetMapping(value = "/new")
     public String add(@ModelAttribute("user") User user) {
         return "/new";
@@ -64,10 +70,5 @@ public class UserController {
     @GetMapping(value = "login-error")
     public String loginError() {
         return "error";
-    }
-
-    @GetMapping(value = "login")
-    public String loginPage() {
-        return "login";
     }
 }
