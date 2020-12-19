@@ -2,18 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <meta charset="ISO-8859-1">
+    <meta charset="UTF-8">
     <title>Users Manager</title>
 </head>
 <body>
 <div align="center">
     <h3 th:inline="text">Welcome [[${#httpServletRequest.remoteUser}]]</h3>
 
-    <form th:action="@{/logout}" method="post">
+    <form th:action="@{/logout}" th:method="POST">
         <input type="submit" value="Logout" />
     </form>
 
-    <h1>User</h1>
+    <h1>User Information</h1>
     <a href="new">Create New User</a>
 
     <br/><br/>
@@ -31,13 +31,13 @@
         </thead>
         <tbody>
         <tr th:each="user : ${users}">
-            <td th:text="${user.id}">Product ID</td>
-            <td th:text="${user.name}">Name</td>
-            <td th:text="${user.age}">Age</td>
-            <td th:text="${user.email}">Email</td>
-<!--            <td th:text="${product.price}">Price</td>-->
+            <td th:text="${user.getId()}">Product ID</td>
+            <td th:text="${user.getName()}">Name</td>
+            <td th:text="${user.getAge()}">Age</td>
+            <td th:text="${user.getEmail()}">Email</td>
+
             <td sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{'/edit/' + ${user.id}}">Edit</a>
+                <a th:href="@{'/edit/' + ${user.getId()}}">Edit</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <a th:href="@{'/delete/' + ${user.getId()}}">Delete</a>
             </td>
@@ -47,28 +47,3 @@
 </div>
 </body>
 </html>
-<!--<!DOCTYPE html>-->
-<!--<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title></title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<div>-->
-<!--    <h1>Users</h1>-->
-<!--    <ol>-->
-<!--        <li th:each="user: ${users}">-->
-<!--            <a th:href="@{/show/{id}(id=${user.getId()})}" th:text="${user.getName()}"></a>-->
-<!--        </li>-->
-<!--    </ol>-->
-<!--    <hr/>-->
-<!--    <a th:href="@{/new}">Create new user</a>-->
-<!--</div>-->
-<!--<div>-->
-<!--    <form th:method="POST" th:action="@{/logout}">-->
-<!--        <input type="submit" value="Logout">-->
-<!--    </form>-->
-<!--</div>-->
-<!--</body>-->
-<!--</html>-->

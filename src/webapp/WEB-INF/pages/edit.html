@@ -7,9 +7,9 @@
 <body>
 
 <div align="center">
-    <h1>Edit Product</h1>
+    <h1>Edit User</h1>
     <br/>
-    <form action="#" th:action="@{/edit/{id}(id=${user.getId()})}" th:object="${user}" method="PATCH">
+    <form action="#" th:action="@{/edit/{id}(id=${user.getId()})}" th:object="${user}" th:method="PATCH">
         <table border="0" cellpadding="10">
             <tr>
                 <td>User ID:</td>
@@ -28,23 +28,10 @@
                 <td><input type="text" th:field="*{email}" /></td>
             </tr>
             <tr>
-                <td colspan="2"><input type="submit" value="edit"></td>
+                <td colspan="2"><button type="submit">Save</button></td>
             </tr>
         </table>
     </form>
 </div>
-
-<!--<form th:action="@{/edit/{id}(id=${user.getId()})}" th:method="PATCH" th:object="${user}">-->
-<!--    <label for="name">Name: </label>-->
-<!--    <input type="text" th:field="*{name}" id="name">-->
-
-<!--    <label for="age">Age: </label>-->
-<!--    <input type="text" th:field="*{age}" id="age">-->
-
-<!--    <label for="email">Email: </label>-->
-<!--    <input type="text" th:field="*{email}" id="email">-->
-
-<!--    <input type="submit" value="edit">-->
-<!--</form>-->
 </body>
 </html>

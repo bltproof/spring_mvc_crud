@@ -3,12 +3,10 @@ package web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import web.model.User;
 import web.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -38,8 +36,8 @@ public class UserController {
     }
 
     @RequestMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable(name = "id") Long id) {
-        userService.delete(id);
+    public String deleteUser(@PathVariable(name = "id") Long id) {
+        userService.deleteById(id);
         return "redirect:/";
     }
 
@@ -65,10 +63,5 @@ public class UserController {
     public String updateUser(@ModelAttribute("user") User user) {
         userService.update(user);
         return "redirect:/";
-    }
-
-    @GetMapping(value = "login-error")
-    public String loginError() {
-        return "error";
     }
 }

@@ -13,7 +13,6 @@ import web.model.Role;
 import web.model.User;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 mapRolesToAuthorities(user.getRoles()));
     }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toSet());
     }
 }

@@ -27,14 +27,13 @@ public class User implements UserDetails {
     @Column
     private String email;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
 
     public User() {
-//        roles = new HashSet<>();
     }
 
     public User(String name, byte age, String email) {
@@ -121,11 +120,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
+    public Collection<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(Collection<Role> roles) {
         this.roles = roles;
     }
 }
