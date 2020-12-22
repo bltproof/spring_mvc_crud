@@ -5,7 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Set;
+import java.util.HashSet;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -15,8 +16,8 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column
     private byte age;
@@ -27,7 +28,7 @@ public class User implements UserDetails {
     @Column
     private String email;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -36,32 +37,28 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, byte age, String email) {
-        this.name = name;
+    public User(String username, String password, byte age, String email) {
+        this.username = username;
+        this.password = password;
         this.age = age;
         this.email = email;
+        this.roles = new HashSet<>();
     }
 
-    public User(Long id, String name, String password, Set<Role> roles) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.roles = roles;
+    @Override
+    public String getUsername() {
+        return username;
     }
 
-    public String getName() {
-        return name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -89,11 +86,6 @@ public class User implements UserDetails {
     @Override
     public String getPassword() {
         return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return name;
     }
 
     @Override
@@ -126,5 +118,32 @@ public class User implements UserDetails {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
+    }
+
+    public void setRole(Role role) {
+        if (roles.isEmpty()) {
+            roles.add(role);
+        } else {
+            roles = new HashSet<>();
+            roles.add(role);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age &&
+                Objects.equals(id, user.id) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, age, password, email, roles);
     }
 }

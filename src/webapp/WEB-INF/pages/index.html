@@ -21,9 +21,11 @@
         <thead>
         <tr>
             <th>User ID</th>
-            <th>Name</th>
+            <th>Username</th>
+            <th>Password</th>
             <th>Age</th>
             <th>Email</th>
+            <th>Role</th>
 
             <th sec:authorize="hasRole('ROLE_ADMIN')">Actions</th>
 
@@ -32,9 +34,16 @@
         <tbody>
         <tr th:each="user : ${users}">
             <td th:text="${user.getId()}">Product ID</td>
-            <td th:text="${user.getName()}">Name</td>
+            <td th:text="${user.getUsername()}">Username</td>
+            <td th:text="${user.getPassword()}">Password</td>
             <td th:text="${user.getAge()}">Age</td>
             <td th:text="${user.getEmail()}">Email</td>
+            <td>
+                <table>
+                    <tr th:each="role: ${user.getRoles()}">
+                        <div th:text="${role.getName()}">role</div>
+                </table>
+            </td>
 
             <td sec:authorize="hasRole('ROLE_ADMIN')">
                 <a th:href="@{'/edit/' + ${user.getId()}}">Edit</a>
