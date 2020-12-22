@@ -1,39 +1,46 @@
 package web.config;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import web.config.handler.LoginSuccessHandler;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import web.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserDetailsService userDetailsService;
-    private final LoginSuccessHandler successHandler;
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsServiceImpl();
+    }
 
-    public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-                          LoginSuccessHandler successHandler) {
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-        this.userDetailsService = userDetailsService;
-        this.successHandler = successHandler;
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
     }
 
     @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
+        http.authorizeRequests()
                 .antMatchers("/edit/**", "/delete/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
@@ -43,58 +50,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().accessDeniedPage("/403")
         ;
-//        http
-//                .formLogin()
-//                // указываем страницу с формой логина
-//                .loginPage("/login")
-//                //указываем логику обработки при логине
-//                .successHandler(successHandler)
-//                .failureUrl("/login-error")
-//                // указываем action с формы логина
-//                .loginProcessingUrl("/login")
-//                // Указываем параметры логина и пароля с формы логина
-//                .usernameParameter("j_username")
-//                .passwordParameter("j_password")
-//                // даем доступ к форме логина всем
-//                .permitAll();
-//
-//        http
-//                .logout()
-//                // разрешаем делать логаут всем
-//                .permitAll()
-//                // указываем URL логаута
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                // указываем URL при удачном логауте
-//                .logoutSuccessUrl("/login?logout")
-//                //выклчаем кроссдоменную секьюрность (на этапе обучения неважна)
-//                .and().csrf().disable();
-//
-//        http
-//                // делаем страницу регистрации недоступной для авторизированных пользователей
-//                .authorizeRequests()
-//                //страницы аутентификаци доступна всем
-//                .antMatchers("/login").anonymous()
-//                // защищенные URL
-//                .antMatchers("/").access("hasAnyRole('ROLE_ADMIN')")
-//                .anyRequest().authenticated();
     }
-
-    @Bean
-    public static NoOpPasswordEncoder passwordEncoder() {
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
-    }
-
-    /*@Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-        authenticationProvider.setUserDetailsService(userDetailsService);
-
-        return authenticationProvider;
-    }*/
 }

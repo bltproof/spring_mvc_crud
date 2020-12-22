@@ -10,11 +10,13 @@
     <h3 th:inline="text">Welcome [[${#httpServletRequest.remoteUser}]]</h3>
 
     <form th:action="@{/logout}" th:method="POST">
-        <input type="submit" value="Logout" />
+        <input type="submit" value="Logout"/>
     </form>
 
     <h1>User Information</h1>
-    <a href="new">Create New User</a>
+    <td sec:authorize="hasRole('ROLE_ADMIN')">
+        <a href="new">Create User</a>
+    </td>
 
     <br/><br/>
     <table border="1" cellpadding="10">
@@ -33,22 +35,22 @@
         </thead>
         <tbody>
         <tr th:each="user : ${users}">
-            <td th:text="${user.getId()}">Product ID</td>
-            <td th:text="${user.getUsername()}">Username</td>
-            <td th:text="${user.getPassword()}">Password</td>
-            <td th:text="${user.getAge()}">Age</td>
-            <td th:text="${user.getEmail()}">Email</td>
+            <td th:text="${user.id}">User ID</td>
+            <td th:text="${user.username}">Username</td>
+            <td th:text="${user.password}">Password</td>
+            <td th:text="${user.age}">Age</td>
+            <td th:text="${user.email}">Email</td>
             <td>
                 <table>
                     <tr th:each="role: ${user.getRoles()}">
-                        <div th:text="${role.getName()}">role</div>
+                        <div th:text="${role.name}">role</div>
                 </table>
             </td>
 
             <td sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{'/edit/' + ${user.getId()}}">Edit</a>
+                <a th:href="@{'/edit/' + ${user.id}}">Edit</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <a th:href="@{'/delete/' + ${user.getId()}}">Delete</a>
+                <a th:href="@{'/delete/' + ${user.id}}">Delete</a>
             </td>
         </tr>
         </tbody>

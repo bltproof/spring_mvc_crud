@@ -17,16 +17,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserDao userDao;
-
     @Autowired
-    public UserDetailsServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
-    }
+    private UserDao userDao;
 
-    // «Пользователь» – это просто Object. В большинстве случаев он может быть
-    //  приведен к классу UserDetails.
-    // Для создания UserDetails используется интерфейс UserDetailsService, с единственным методом:
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

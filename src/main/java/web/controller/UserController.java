@@ -11,8 +11,6 @@ import web.service.RoleService;
 import web.service.UserService;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 @Controller
 public class UserController {
