@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import web.model.Role;
 import web.model.User;
 import web.service.RoleService;
 import web.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -26,14 +28,14 @@ public class UserController {
     public String showAllUsers(@ModelAttribute("user") User user, Model model) {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
-        return "index";
+        return "/admin/index";
     }
 
-    @GetMapping(value = "/show/{id}")
+    @GetMapping(value = "/user/show/{id}")
     public String showUser(@PathVariable("id") long id, Model model) {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
-        return "/show";
+        return "/user/show";
     }
 
     @DeleteMapping(value = "/delete/{id}")
@@ -48,17 +50,24 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping(value = "/new")
+    @GetMapping(value = "/admin/new")
     public String add(Model model) {
         User user = new User();
         Role role = new Role();
         model.addAttribute("user", user);
         model.addAttribute("role", role);
         model.addAttribute("roles", roleService.listRoles());
-        return "/new";
+        return "/admin/new";
+    }
+    @GetMapping("/admin/{id}")
+    public String getUser(@PathVariable("id") long id, Model model) {
+        List<User> list = new ArrayList<>();
+        list.add(userService.getUserById(id));
+        model.addAttribute(list);
+        return "admin/index";
     }
 
-    @PostMapping(value = "/new")
+    @PostMapping(value = "/admin/new")
     public String addUser(Model model, @ModelAttribute("user") User user, @ModelAttribute("role") Role role) {
         Role newRole = roleService.listRoles()
                 .stream()
@@ -77,7 +86,7 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping(value = "/edit/{id}")
+    @GetMapping(value = "/admin/edit/{id}")
     public String editUser(@PathVariable("id") long id, Model model) {
         User user = userService.getUserById(id);
 
@@ -86,10 +95,10 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("role", role);
         model.addAttribute("roles", roleService.listRoles());
-        return "/edit";
+        return "/admin/edit";
     }
 
-    @PatchMapping(value = "/edit/{id}")
+    @PatchMapping(value = "/admin/edit/{id}")
     public String updateUser(@ModelAttribute("user") User user, @ModelAttribute Role role) {
         Role newRole = roleService.listRoles()
                 .stream()
@@ -112,5 +121,9 @@ public class UserController {
         userService.update(obj);
 
         return "redirect:/";
+    }
+    @GetMapping("/login")
+    public String loginPage(ModelMap model) {
+        return "login";
     }
 }

@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Users Manager</title>
+    <title>Show user info</title>
 </head>
 <body>
 <div align="center">
@@ -14,9 +13,6 @@
     </form>
 
     <h1>User Information</h1>
-    <td sec:authorize="hasRole('ROLE_ADMIN')">
-        <a href="new">Create User</a>
-    </td>
 
     <br/><br/>
     <table border="1" cellpadding="10">
@@ -29,12 +25,9 @@
             <th>Email</th>
             <th>Role</th>
 
-            <th sec:authorize="hasRole('ROLE_ADMIN')">Actions</th>
-
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user : ${users}">
             <td th:text="${user.id}">User ID</td>
             <td th:text="${user.username}">Username</td>
             <td th:text="${user.password}">Password</td>
@@ -45,14 +38,7 @@
                     <tr th:each="role: ${user.getRoles()}">
                         <div th:text="${role.name}">role</div>
                 </table>
-            </td>
 
-            <td sec:authorize="hasRole('ROLE_ADMIN')">
-                <a th:href="@{'/edit/' + ${user.id}}">Edit</a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <a th:href="@{'/delete/' + ${user.id}}">Delete</a>
-            </td>
-        </tr>
         </tbody>
     </table>
 </div>

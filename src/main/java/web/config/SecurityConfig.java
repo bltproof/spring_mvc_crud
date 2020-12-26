@@ -9,11 +9,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import web.config.handler.LoginSuccessHandler;
 import web.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private final LoginSuccessHandler loginSuccessHandler;
+
+    public SecurityConfig(LoginSuccessHandler loginSuccessHandler) {
+        this.loginSuccessHandler = loginSuccessHandler;
+    }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
@@ -40,14 +47,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .formLogin()
+                .loginPage("/login")
+                .successHandler(loginSuccessHandler)
+                .loginProcessingUrl("/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .permitAll()
+                .and().csrf().disable();
+
+        http
+                .logout()
+                .permitAll()
+                .logoutSuccessUrl("/login");
+
+        http
+                .authorizeRequests()
                 .antMatchers("/edit/**", "/delete/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
+//                .and()
+//                .formLogin().permitAll()
                 .and()
-                .formLogin().permitAll()
-                .and()
-                .logout().permitAll()
-                .and()
+//                .logout().permitAll()
+//                .and()
                 .exceptionHandling().accessDeniedPage("/403")
         ;
     }
