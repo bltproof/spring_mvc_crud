@@ -105,16 +105,12 @@ public class UserController {
                 .filter(r -> r.getName().equals(role.getName()))
                 .findAny().orElse(null);
 
-        User obj = userService.getUserById(user.getId());
 
-        obj.setUsername(user.getUsername());
-        obj.setPassword(passwordEncoder.encode(user.getPassword()));
-        obj.setAge(user.getAge());
-        obj.setEmail(user.getEmail());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        obj.setRole(newRole);
+        user.setRole(newRole);
 
-        userService.update(obj);
+        userService.update(user);
 
         return "redirect:/";
     }
