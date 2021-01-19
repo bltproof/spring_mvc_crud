@@ -102,14 +102,10 @@ public class UserController {
     public String updateUser(@ModelAttribute("user") User user, @ModelAttribute Role role) {
         Role newRole = roleService.listRoles()
                 .stream()
-                .filter(x -> x.getName().equals(role.getName()))
-                .findAny().get();
+                .filter(r -> r.getName().equals(role.getName()))
+                .findAny().orElse(null);
 
-        User obj = userService.getAllUsers()
-                .stream()
-                .filter(u -> u.getId() == user.getId())
-                .findAny()
-                .get();
+        User obj = userService.getUserById(user.getId());
 
         obj.setUsername(user.getUsername());
         obj.setPassword(passwordEncoder.encode(user.getPassword()));
