@@ -38,12 +38,6 @@ public class UserController {
         return "/user/show";
     }
 
-    @DeleteMapping(value = "/delete/{id}")
-    public String deleteUser(@ModelAttribute("user") User user) {
-        userService.delete(user);
-        return "redirect:/";
-    }
-
     @RequestMapping("/delete/{id}")
     public String deleteUser(@PathVariable(name = "id") Long id) {
         userService.deleteById(id);
@@ -71,17 +65,13 @@ public class UserController {
     public String addUser(Model model, @ModelAttribute("user") User user, @ModelAttribute("role") Role role) {
         Role newRole = roleService.listRoles()
                 .stream()
-                .filter(x -> x.getName().equals(role.getName()))
+                .filter(r -> r.getName().equals(role.getName()))
                 .findAny().get();
 
-        User obj = new User(
-                user.getUsername(),
-                passwordEncoder.encode(user.getPassword()),
-                user.getAge(),
-                user.getEmail());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(newRole);
 
-        obj.setRole(newRole);
-        userService.add(obj);
+        userService.add(user);
         model.addAttribute("users", userService.getAllUsers());
         return "redirect:/";
     }
@@ -105,20 +95,11 @@ public class UserController {
                 .filter(x -> x.getName().equals(role.getName()))
                 .findAny().get();
 
-        User obj = userService.getAllUsers()
-                .stream()
-                .filter(u -> u.getId() == user.getId())
-                .findAny()
-                .get();
-
-        obj.setUsername(user.getUsername());
-        obj.setPassword(passwordEncoder.encode(user.getPassword()));
-        obj.setAge(user.getAge());
-        obj.setEmail(user.getEmail());
-
-        obj.setRole(newRole);
-
-        userService.update(obj);
+        if(!user.getPassword().equals(userService.getUserById(user.getId()).getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        user.setRole(newRole);
+        userService.update(user);
 
         return "redirect:/";
     }
